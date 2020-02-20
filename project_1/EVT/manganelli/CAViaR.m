@@ -47,8 +47,8 @@ c = ['TABLE', int2str(THETA(2)), '= [TABLE', int2str(1), '_',int2str(THETA(2)), 
 eval(b), eval(c)
 
 % Save the tables in ASCII format.
-d = ['save J:\papersPublished\CAViaR\Results\TABLE', int2str(THETA(1)), ' TABLE', int2str(THETA(1)), ' -ascii -double'];
-e = ['save J:\papersPublished\CAViaR\Results\TABLE', int2str(THETA(2)), ' TABLE', int2str(THETA(2)), ' -ascii -double'];
+d = ['save TABLE', int2str(THETA(1)), ' TABLE', int2str(THETA(1)), ' -ascii -double'];
+e = ['save TABLE', int2str(THETA(2)), ' TABLE', int2str(THETA(2)), ' -ascii -double'];
 eval(d), eval(e)
 
 % Generate the plots in the paper.
@@ -70,5 +70,4 @@ ImpactCurveADAPTIVE = NewsImpactCurve(output4_1.BETA(:,3), 4);
 subplot(2,2,4); plot(y, ImpactCurveADAPTIVE), axis manual, axis([-10,10,1,11]), title('1% S&P500 Impact Curve - Adaptive')
 
 % Save the workspace.
-save J:\papersPublished\CAViaR\Results\allmodels01_07_50
 toc

@@ -34,6 +34,10 @@ Hit(1) = (y(1) < -VaR(1)) - THETA;
 %********************************************************************************************
 % Model 1: Symmetric Absolute Value.
 %
+
+% EDIT: 2020-02-20 Matthew Dunlop
+% Need to load the respective c libraries
+
 if MODEL == 1
 
    VaR = SAVloop(THETA, BETA, y, VaR(1)); % Call the C program to compute the VaR loop.

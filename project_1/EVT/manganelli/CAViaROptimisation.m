@@ -47,7 +47,7 @@ end
 %
 % ***************************** WARNING *****************************
 % Remember to change the path to your own directory before running the program.
-load j:\papersPublished\caviar\data\dataCAViaR.txt 
+load dataCAViaR.txt 
 % *****************************************************************************************
 
 %
@@ -79,7 +79,7 @@ elseif MODEL == 4 % See the comment in RQobjectivefunction.m lines 66-70 for thi
 end
 MaxFunEvals = 500; % Parameters for the optimisation algorithm. Increase them in case the algorithm does not converge.
 MaxIter     = 500;
-options = optimset('LargeScale', 'off', 'HessUpdate', 'dfp', 'LineSearchType', 'quadcubic','MaxFunEvals', MaxFunEvals, ...
+options = optimset('LargeScale', 'off', 'HessUpdate', 'dfp','MaxFunEvals', MaxFunEvals, ...
                     'display', 'off', 'MaxIter', MaxIter, 'TolFun', 1e-10, 'TolX', 1e-10);
 warning off
 
