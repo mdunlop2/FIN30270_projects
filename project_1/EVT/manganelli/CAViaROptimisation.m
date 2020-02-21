@@ -47,7 +47,8 @@ end
 %
 % ***************************** WARNING *****************************
 % Remember to change the path to your own directory before running the program.
-load dataCAViaR.txt 
+load dataCAViaR.txt
+% dataCAViaR  = readtable('data/ret.csv');
 % *****************************************************************************************
 
 %
