@@ -6,7 +6,7 @@
 %**************************************************************************
 
 % Load in the returns data
-ret = readtable('data/ret.csv');
+ret = readmatrix('data/ret.csv');
 
 % REPLACE WITH LOOP OVER SHARES!
 % {
@@ -14,9 +14,9 @@ ret = readtable('data/ret.csv');
 %   {
 % REPLACE WITH LOOP OVER METHOD PARAMETERS
 %       {
-% REPLACE WITH LOOP OVER VALIDATION SET
+% REPLACE WITH LOOP OVER VALIDATIexecON SET
 %
-VAR = fn_caviar(ret, 0.05);
+VAR = fn_caviar(ret, 0.05)
 % CHOOSE OPTIMAL PARAMETERS
 %       }
 %   }

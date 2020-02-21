@@ -20,7 +20,7 @@ function [VAR] = fn_caviar(DATA,THETA)
 %**************************************************************************
 
 % Define some variables.
-ytot        = DATA 	
+ytot        = DATA;
 inSampleObs = 2892;				    % Number of in sample observations.
 totalObs    = size(ytot,1);			% Number of total observations.
 y = ytot(1:inSampleObs,:);
@@ -48,12 +48,13 @@ DQoutOfSample  = DQinSample;
 %
 % Compute the empirical THETA-quantile for y (the in-sample vector of observations).
 for t = 1:nSamples
-   ysort(:, t)          = sortrows(y(1:300, t), 1); 
-   empiricalQuantile(t) = ysort(round(300*THETA), t);
+   ysort(:, t)          = sortrows(y(1:300, t), 1);
+   row_ind = round(300*THETA);
+   empiricalQuantile(t) = ysort(row_ind, t);
 end
 
 
 % placeholder until we get this working
-VAR = ALPHA.*DATA;
+VAR = THETA;
 end
 
