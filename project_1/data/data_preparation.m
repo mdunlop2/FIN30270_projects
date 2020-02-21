@@ -13,6 +13,7 @@ Date = IBM_full{q:n,1};
 % put it into Manganelli 's Format, 2 cols
 ret = [IBM NVDA];
 writematrix(ret, 'data/ret.csv');
+writematrix(Date, 'data/date.csv');
 
 T = 21; % Number of trading days in a month
 Years = 10; % Number of years for calculaton
