@@ -3,7 +3,7 @@ function [DailyMCVar,MonthlyMCVar,DailyMCES,MonthlyMCES] = MonteCarlo(Data,iter,
 %distribution chosen to sample from. 
     pd = fitdist(Data,'tLocationScale');
     Losses = zeros(iter,1);
-    rng(seed) % set seed for random number generation
+    rng(seed, "twister") % set seed for random number generation
     
     Losses = P*random('tLocationScale',pd.mu,pd.sigma,pd.nu,[iter,1]);
     LossesSorted = sort(-1*Losses);

@@ -1,4 +1,4 @@
-function [VAR] = fn_caviar(DATA,THETA)
+function [VaR_last] = fn_caviar(DATA,THETA)
 %**************************************************************************
 % Applies the Asymmetric CAViaR Method
 % Deployed by Manganelli et al (2002)
@@ -21,8 +21,8 @@ function [VAR] = fn_caviar(DATA,THETA)
 
 % Define some variables.
 ytot        = DATA;
-inSampleObs = 2892;				    % Number of in sample observations.
 totalObs    = size(ytot,1);			% Number of total observations.
+inSampleObs = totalObs -1;   	    % Number of in sample observations.
 y = ytot(1:inSampleObs,:);
 nSamples    = size(y,2);
 MODEL = 2; % Asymmetric Slope
@@ -50,77 +50,77 @@ DQoutOfSample  = DQinSample;
 %
 % Compute the empirical THETA-quantile for y (the in-sample vector of observations).
 for t = 1:nSamples
-   ysort(:, t)          = sortrows(y(1:300, t), 1);
-   row_ind = round(300*THETA);
+   ysort(:, t)          = sortrows(y(:, t), 1);
+   row_ind = round(length(ysort(:,t))*THETA);
    empiricalQuantile(t) = ysort(row_ind, t);
 end
 
-for t = 1 : nSamples
-    disp('__________________')
-    disp(' ')
-    SMPL = ['disp(', '''', ' Caviar Asymmetric : Sample number: ', int2str(t), '''', ' )']; eval(SMPL)
-    disp('__________________')
+t = nSamples;
+disp('__________________')
+disp(' ')
+SMPL = ['disp(', '''', ' Caviar Asymmetric : Sample number: ', int2str(t), '''', ' )']; eval(SMPL)
+disp('__________________')
 
 %   
 %   
 %**************************** Optimization Routine ******************************************  
-    initialTargetVectors = unifrnd(0, 1, nInitialVectors);
-      
-    RQfval = zeros(nInitialVectors(1), 1);
-    for i = 1:nInitialVectors(1)
-        RQfval(i) = RQobjectiveFunction(initialTargetVectors(i,:), 1, MODEL, inSampleObs, y(:,t), THETA, empiricalQuantile(t));
-    end
-    Results          = [RQfval, initialTargetVectors];
-    SortedResults    = sortrows(Results,1);
-    
-    if (MODEL == 1) | (MODEL == 3)
-        BestInitialCond  = SortedResults(1:nInitialCond,2:4);
-    elseif MODEL == 2
-        BestInitialCond  = SortedResults(1:nInitialCond,2:5);
-    elseif MODEL == 4
-        BestInitialCond  = SortedResults(1:nInitialCond,2);
-    end
-    
-    for i = 1:size(BestInitialCond,1)
-        [Beta(i,:), fval(i,1), exitflag(i,1)] = fminsearch('RQobjectiveFunction', BestInitialCond(i,:), options, 1, MODEL, inSampleObs, y(:,t), THETA, empiricalQuantile(t));
-        for it = 1:REP
-            [Beta(i,:), fval(i,1), exitflag(i,1)] = fminunc('RQobjectiveFunction', Beta(i,:), options, 1, MODEL, inSampleObs, y(:,t), THETA, empiricalQuantile(t));
-            [Beta(i,:), fval(i,1), exitflag(i,1)] = fminsearch('RQobjectiveFunction', Beta(i,:), options, 1, MODEL, inSampleObs, y(:,t), THETA, empiricalQuantile(t));
-            if exitflag(i,1) == 1
-                break
-            end
+initialTargetVectors = unifrnd(0, 1, nInitialVectors);
+
+RQfval = zeros(nInitialVectors(1), 1);
+for i = 1:nInitialVectors(1)
+    RQfval(i) = RQobjectiveFunction(initialTargetVectors(i,:), 1, MODEL, inSampleObs, y(:,t), THETA, empiricalQuantile(t));
+end
+Results          = [RQfval, initialTargetVectors];
+SortedResults    = sortrows(Results,1);
+
+if (MODEL == 1) | (MODEL == 3)
+    BestInitialCond  = SortedResults(1:nInitialCond,2:4);
+elseif MODEL == 2
+    BestInitialCond  = SortedResults(1:nInitialCond,2:5);
+elseif MODEL == 4
+    BestInitialCond  = SortedResults(1:nInitialCond,2);
+end
+
+for i = 1:size(BestInitialCond,1)
+    [Beta(i,:), fval(i,1), exitflag(i,1)] = fminsearch('RQobjectiveFunction', BestInitialCond(i,:), options, 1, MODEL, inSampleObs, y(:,t), THETA, empiricalQuantile(t));
+    for it = 1:REP
+        [Beta(i,:), fval(i,1), exitflag(i,1)] = fminunc('RQobjectiveFunction', Beta(i,:), options, 1, MODEL, inSampleObs, y(:,t), THETA, empiricalQuantile(t));
+        [Beta(i,:), fval(i,1), exitflag(i,1)] = fminsearch('RQobjectiveFunction', Beta(i,:), options, 1, MODEL, inSampleObs, y(:,t), THETA, empiricalQuantile(t));
+        if exitflag(i,1) == 1
+            break
         end
     end
-    SortedFval  = sortrows([fval, Beta, exitflag, BestInitialCond], 1);
-    
-    
-    if (MODEL == 1) | (MODEL == 3)
-        BestFval         = SortedFval(1, 1);
-        BetaHat(:, t)    = SortedFval(1, 2:4)';
-        ExitFlag         = SortedFval(1, 5);
-        InitialCond(:,t) = SortedFval(1, 6:8)';
-        
-    elseif MODEL == 2
-        BestFval         = SortedFval(1, 1);
-        BetaHat(:, t)    = SortedFval(1, 2:5)';
-        ExitFlag         = SortedFval(1, 6);
-        InitialCond(:,t) = SortedFval(1, 7:10)';
-        
-    elseif MODEL == 4
-        BestFval         = SortedFval(1, 1);
-        BetaHat(:, t)    = SortedFval(1, 2);
-        ExitFlag         = SortedFval(1, 3);
-        InitialCond(:,t) = SortedFval(1, 4);
-        
-    end
+end
+SortedFval  = sortrows([fval, Beta, exitflag, BestInitialCond], 1);
+
+
+if (MODEL == 1) | (MODEL == 3)
+    BestFval         = SortedFval(1, 1);
+    BetaHat(:, t)    = SortedFval(1, 2:4)';
+    ExitFlag         = SortedFval(1, 5);
+    InitialCond(:,t) = SortedFval(1, 6:8)';
+
+elseif MODEL == 2
+    BestFval         = SortedFval(1, 1);
+    BetaHat(:, t)    = SortedFval(1, 2:5)';
+    ExitFlag         = SortedFval(1, 6);
+    InitialCond(:,t) = SortedFval(1, 7:10)';
+
+elseif MODEL == 4
+    BestFval         = SortedFval(1, 1);
+    BetaHat(:, t)    = SortedFval(1, 2);
+    ExitFlag         = SortedFval(1, 3);
+    InitialCond(:,t) = SortedFval(1, 4);
+
+end
 
 %**************************** End of Optimization Routine ******************************************
-    % Compute VaR and Hit for the estimated parameters of RQ.
-    VaRHit  = RQobjectiveFunction(BetaHat(:,t)', 2, MODEL, totalObs, ytot(:,t), THETA, empiricalQuantile(t));
-    VaR(:,t) = VaRHit(:,1); Hit(:,t) = VaRHit(:,2);
-end			% End of the t loop.
+% Compute VaR and Hit for the estimated parameters of RQ.
+VaRHit  = RQobjectiveFunction(BetaHat(:,t)', 2, MODEL, totalObs, ytot(:,t), THETA, empiricalQuantile(t));
+VaR(:,t) = VaRHit(:,1); Hit(:,t) = VaRHit(:,2);
 
-% placeholder until we get this working
-VAR = VaR;
+% return today's prediction
+% We use THETA as the lower tail so need to reverse Manganelli's output
+VaR_last = -VaR(length(VaR),t);
 end
 
