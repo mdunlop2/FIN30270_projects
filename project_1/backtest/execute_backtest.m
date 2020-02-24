@@ -10,7 +10,7 @@ IBM_full  = readtable('data/IBM.csv');
 NVDA_full = readtable('data/NVDA.csv');
 
 T = 21; % Number of trading days in a month
-Years = 0.125; % Number of years for calculaton
+Years = 20; % Number of years for calculaton
 n = height(IBM_full); % Number of days of data
 q = n - Years.*12.*T;
 
@@ -26,7 +26,7 @@ len_train_window = len_train;
 
 %**************************************************************************
 % Macro Parameters
-n_methods = 7;  % Number of mthods to test
+n_methods = 8;  % Number of mthods to test
 THETA = 0.99;   % VaR Percentage (Confidence Level)
 P = 1;          % portfolio size
 
@@ -37,14 +37,15 @@ seed = 1; % MC sim
 R=800; % Coefficient of Risk Aversion
 nt=10000; % Number of steps for trapezodial rule
 n_obs = len_test;
-Monthly_VaR = zeros(n_obs,5);
-Daily_ES = zeros(n_obs,5);
-Monthly_ES = zeros(n_obs,5);
+n_Hannon = 6; % Number of hannon's methods
+Monthly_VaR = zeros(n_obs,n_Hannon);
+Daily_ES = zeros(n_obs,n_Hannon);
+Monthly_ES = zeros(n_obs,n_Hannon);
 SRM = zeros(n_obs,1);
 
 %**************************************************************************
 % Matthew's Parameters
-LAMBDA = 0.99;
+LAMBDA = 0.8;
 
 %**************************************************************************
 % create storage for VaR estimates
@@ -71,6 +72,7 @@ for s =1:2
         [Daily_VaR(s, 3, i),Monthly_VaR(i,3),Daily_ES(i,3),Monthly_ES(i,3)] = StudentVarES(Returns,P,cl);
         [Daily_VaR(s, 4, i),Monthly_VaR(i,4),Daily_ES(i,4),Monthly_ES(i,4)] = CornishFischerVarES(Returns,P,cl);
         [Daily_VaR(s, 5, i),Monthly_VaR(i,5),Daily_ES(i,5),Monthly_ES(i,5)] = MonteCarlo(Returns,iter,P,cl,seed);
+        [Daily_VaR(s, 8, i),Monthly_VaR(i,6),Daily_ES(i,6),Monthly_ES(i,6)] = LognormalVarES(Returns,P,cl);
         %******************************************************************
         % Backtest Matthew's Code
         Daily_VaR(s, 6, i) = fn_awb(ret_train, date_train, THETA, LAMBDA);
@@ -83,10 +85,10 @@ for s =1:2
     for m = 1:n_methods
         % score the backtest results
         QPS_grid(s, m) = fn_QPS(ret(len_train_window+1:len_train_window+len_test), hist_ES(s,m,:), Daily_VaR(s,m,:));
-        fprintf('QPS Score for Method %.1f of %.1f Methods Complete')
+        fprintf('QPS Score for Method %.1f of %.1f Methods Complete\n',m,n_methods)
         % get a Kupic Score
         Kupiec_grid(s,m) = fn_kupiec(ret(len_train_window+1:len_train_window+len_test), Daily_VaR(s,m,:));
-        fprintf('Kupiec Score for Method %.1f of %.1f Methods Complete')
+        fprintf('Kupiec Score for Method %.1f of %.1f Methods Complete\n',m,n_methods)
     end
 end
 % write all of our results to csv
@@ -118,6 +120,7 @@ legend('Historical VaR','Normal VaR','Student-t VaR','Cornish-Fischer VaR','Mont
 title('Actual Returns vs 99% VaR estimates')
 xlabel('Date')
 ylabel('IBM Returns')
+ylim([-1 0.25])
 saveas(gcf,'backtest/IBM-backtest.pdf')
 
 % NVDA
@@ -133,10 +136,11 @@ plot(test_dates, squeeze(-Daily_VaR(S,4,:)))
 plot(test_dates, squeeze(-Daily_VaR(S,5,:)))
 plot(test_dates, squeeze(-Daily_VaR(S,6,:)))
 plot(test_dates, squeeze(-Daily_VaR(S,7,:)))
-legend('Historical VaR','Normal VaR','Student-t VaR','Cornish-Fischer VaR','Monte Carlo VaR','Age-Weighted VaR', 'CAViaR','Location', 'southwest')
+legend('Historical VaR','Normal VaR','Student-t VaR','Cornish-Fischer VaR','Monte Carlo VaR','Age-Weighted VaR', 'CAViaR', 'Lognormal VaR','Location', 'southwest')
 title('Actual Returns vs 99% VaR estimates')
 xlabel('Date')
 ylabel('NVDA Returns')
+ylim([-1 0.25])
 saveas(gcf,'backtest/NVDA-backtest.pdf')
 %**********************
 
