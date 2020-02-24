@@ -67,12 +67,12 @@ for s =1:2
         date_train = date(i:len_train_window+i);
         %******************************************************************
         % Backtest Hannon's Code
-        [Daily_VaR(s, 1, i),Monthly_VaR(i,1),Daily_ES(i,1),Monthly_ES(i,1)] = HistoricalVarES(Returns,P,cl);
-        [Daily_VaR(s, 2, i),Monthly_VaR(i,2),Daily_ES(i,2),Monthly_ES(i,2)] = NormalVarES(Returns,P,cl);
-        [Daily_VaR(s, 3, i),Monthly_VaR(i,3),Daily_ES(i,3),Monthly_ES(i,3)] = StudentVarES(Returns,P,cl);
-        [Daily_VaR(s, 4, i),Monthly_VaR(i,4),Daily_ES(i,4),Monthly_ES(i,4)] = CornishFischerVarES(Returns,P,cl);
-        [Daily_VaR(s, 5, i),Monthly_VaR(i,5),Daily_ES(i,5),Monthly_ES(i,5)] = MonteCarlo(Returns,iter,P,cl,seed);
-        [Daily_VaR(s, 8, i),Monthly_VaR(i,6),Daily_ES(i,6),Monthly_ES(i,6)] = LognormalVarES(Returns,P,cl);
+        [Daily_VaR(s, 1, i),Monthly_VaR(i,1),Daily_ES(i,1),Monthly_ES(i,1)] = HistoricalVarES(ret_train,P,cl);
+        [Daily_VaR(s, 2, i),Monthly_VaR(i,2),Daily_ES(i,2),Monthly_ES(i,2)] = NormalVarES(ret_train,P,cl);
+        [Daily_VaR(s, 3, i),Monthly_VaR(i,3),Daily_ES(i,3),Monthly_ES(i,3)] = StudentVarES(ret_train,P,cl);
+        [Daily_VaR(s, 4, i),Monthly_VaR(i,4),Daily_ES(i,4),Monthly_ES(i,4)] = CornishFischerVarES(ret_train,P,cl);
+        [Daily_VaR(s, 5, i),Monthly_VaR(i,5),Daily_ES(i,5),Monthly_ES(i,5)] = MonteCarlo(ret_train,iter,P,cl,seed);
+        [Daily_VaR(s, 8, i),Monthly_VaR(i,6),Daily_ES(i,6),Monthly_ES(i,6)] = LognormalVarES(ret_train,P,cl);
         %******************************************************************
         % Backtest Matthew's Code
         Daily_VaR(s, 6, i) = fn_awb(ret_train, date_train, THETA, LAMBDA);
@@ -107,40 +107,44 @@ test_returns = ret(len_train_window+1:len_train_window+len_test,1);
 % IBM
 S = 1;
 figure('Position', [10 10 900 600])
-plot(test_dates, test_returns);
 hold on
-plot(test_dates, squeeze(-Daily_VaR(S,1,:)))
-plot(test_dates, squeeze(-Daily_VaR(S,2,:)))
-plot(test_dates, squeeze(-Daily_VaR(S,3,:)))
-plot(test_dates, squeeze(-Daily_VaR(S,4,:)))
-plot(test_dates, squeeze(-Daily_VaR(S,5,:)))
-plot(test_dates, squeeze(-Daily_VaR(S,6,:)))
-plot(test_dates, squeeze(-Daily_VaR(S,7,:)))
-legend('Historical VaR','Normal VaR','Student-t VaR','Cornish-Fischer VaR','Monte Carlo VaR','Age-Weighted VaR', 'CAViaR','Location', 'southwest')
+plot(test_dates, test_returns, 'color','k'); M0 = 'Actual Return';
+plot(test_dates, squeeze(-Daily_VaR(S,1,:))), M1 = 'Historical VaR';
+plot(test_dates, squeeze(-Daily_VaR(S,2,:))), M2 = 'Normal VaR';
+plot(test_dates, squeeze(-Daily_VaR(S,3,:))), M3 = 'Student-t VaR';
+plot(test_dates, squeeze(-Daily_VaR(S,4,:))), M4 = 'Cornish-Fischer VaR';
+plot(test_dates, squeeze(-Daily_VaR(S,5,:))), M5 = 'Monte Carlo VaR';
+plot(test_dates, squeeze(-Daily_VaR(S,6,:))), M6 = 'Age-Weighted VaR';
+plot(test_dates, squeeze(-Daily_VaR(S,8,:))), M8 = 'Lognormal VaR';
+plot(test_dates, squeeze(-Daily_VaR(S,7,:))), M7 = 'CAViaR';
+
+legend(M0,M1',M2,M3,M4,M5,M6,M8,M7, 'Location', 'southwest')
 title('Actual Returns vs 99% VaR estimates')
 xlabel('Date')
 ylabel('IBM Returns')
-ylim([-1 0.25])
+ylim([-0.15 0.1])
 saveas(gcf,'backtest/IBM-backtest.pdf')
 
 % NVDA
 % IBM
 S = 2;
 figure('Position', [10 10 900 600])
-plot(test_dates, test_returns);
 hold on
-plot(test_dates, squeeze(-Daily_VaR(S,1,:)))
-plot(test_dates, squeeze(-Daily_VaR(S,2,:)))
-plot(test_dates, squeeze(-Daily_VaR(S,3,:)))
-plot(test_dates, squeeze(-Daily_VaR(S,4,:)))
-plot(test_dates, squeeze(-Daily_VaR(S,5,:)))
-plot(test_dates, squeeze(-Daily_VaR(S,6,:)))
-plot(test_dates, squeeze(-Daily_VaR(S,7,:)))
-legend('Historical VaR','Normal VaR','Student-t VaR','Cornish-Fischer VaR','Monte Carlo VaR','Age-Weighted VaR', 'CAViaR', 'Lognormal VaR','Location', 'southwest')
+plot(test_dates, test_returns, 'color','k'); M0 = 'Actual Return';
+plot(test_dates, squeeze(-Daily_VaR(S,1,:))), M1 = 'Historical VaR';
+plot(test_dates, squeeze(-Daily_VaR(S,2,:))), M2 = 'Normal VaR';
+plot(test_dates, squeeze(-Daily_VaR(S,3,:))), M3 = 'Student-t VaR';
+plot(test_dates, squeeze(-Daily_VaR(S,4,:))), M4 = 'Cornish-Fischer VaR';
+plot(test_dates, squeeze(-Daily_VaR(S,5,:))), M5 = 'Monte Carlo VaR';
+plot(test_dates, squeeze(-Daily_VaR(S,6,:))), M6 = 'Age-Weighted VaR';
+plot(test_dates, squeeze(-Daily_VaR(S,8,:))), M8 = 'Lognormal VaR';
+plot(test_dates, squeeze(-Daily_VaR(S,7,:))), M7 = 'CAViaR';
+
+legend(M0,M1',M2,M3,M4,M5,M6,M8,M7, 'Location', 'southwest')
 title('Actual Returns vs 99% VaR estimates')
 xlabel('Date')
 ylabel('NVDA Returns')
-ylim([-1 0.25])
+ylim([-0.15 0.1])
 saveas(gcf,'backtest/NVDA-backtest.pdf')
 %**********************
 

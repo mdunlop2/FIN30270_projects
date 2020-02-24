@@ -28,11 +28,11 @@ nSamples    = size(y,2);
 MODEL = 2; % Asymmetric Slope
 
 REP			  = 1;                % Number of times the optimization algorithm is repeated.
-nInitialVectors = [1000, 4];      % Number of initial vector fed in the uniform random number generator for AS model.
+nInitialVectors = [10000, 4];      % Number of initial vector fed in the uniform random number generator for AS model.
 nInitialCond = 15;                % Select the number of initial conditions for the optimisation.
 
 MaxFunEvals = 500; % Parameters for the optimisation algorithm. Increase them in case the algorithm does not converge.
-MaxIter     = 100;
+MaxIter     = 500;
 options = optimset('LargeScale', 'off', 'HessUpdate', 'dfp','MaxFunEvals', MaxFunEvals, ...
                     'display', 'off', 'MaxIter', MaxIter, 'TolFun', 1e-10, 'TolX', 1e-10);
 warning off
