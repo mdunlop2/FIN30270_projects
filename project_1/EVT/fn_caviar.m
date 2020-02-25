@@ -56,10 +56,6 @@ for t = 1:nSamples
 end
 
 t = nSamples;
-disp('__________________')
-disp(' ')
-SMPL = ['disp(', '''', ' Caviar Asymmetric : Sample number: ', int2str(t), '''', ' )']; eval(SMPL)
-disp('__________________')
 
 %   
 %   

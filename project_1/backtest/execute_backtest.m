@@ -118,11 +118,11 @@ plot(test_dates, squeeze(-Daily_VaR(S,6,:))), M6 = 'Age-Weighted VaR';
 plot(test_dates, squeeze(-Daily_VaR(S,8,:))), M8 = 'Lognormal VaR';
 plot(test_dates, squeeze(-Daily_VaR(S,7,:))), M7 = 'CAViaR';
 
-legend(M0,M1',M2,M3,M4,M5,M6,M8,M7, 'Location', 'southwest')
+legend(M0,M1',M2,M3,M4,M5,M6,M8,M7, 'Location', 'northwest')
 title('Actual Returns vs 99% VaR estimates')
 xlabel('Date')
 ylabel('IBM Returns')
-ylim([-0.15 0.1])
+ylim([-0.3 0.1])
 saveas(gcf,'backtest/IBM-backtest.pdf')
 
 % NVDA
@@ -140,11 +140,11 @@ plot(test_dates, squeeze(-Daily_VaR(S,6,:))), M6 = 'Age-Weighted VaR';
 plot(test_dates, squeeze(-Daily_VaR(S,8,:))), M8 = 'Lognormal VaR';
 plot(test_dates, squeeze(-Daily_VaR(S,7,:))), M7 = 'CAViaR';
 
-legend(M0,M1',M2,M3,M4,M5,M6,M8,M7, 'Location', 'southwest')
+legend(M0,M1',M2,M3,M4,M5,M6,M8,M7, 'Location', 'northwest')
 title('Actual Returns vs 99% VaR estimates')
 xlabel('Date')
 ylabel('NVDA Returns')
-ylim([-0.15 0.1])
+ylim([-0.3 0.1])
 saveas(gcf,'backtest/NVDA-backtest.pdf')
 %**********************
 
